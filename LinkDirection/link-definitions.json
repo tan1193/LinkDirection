@@ -1,0 +1,13 @@
+{
+  "slugs": [
+    {
+      "slug": "example-slug",
+      "defaultUrl": "https://www.amazon.com/dp/US-PRODUCT-ID",
+      "regionUrls": {
+        "VN": "https://www.amazon.ca/dp/CA-PRODUCT-ID"
+        // Add more region-specific URLs as needed
+      }
+    }
+    // Add more slugs and their URLs here
+  ]
+}

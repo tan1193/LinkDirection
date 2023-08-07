@@ -1,4 +1,6 @@
+using LinkDirection.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,25 +21,24 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-//app.MapGet("/redirect", (string slug) =>
-//{
-//    if (slugDefinitions.TryGetValue(slug, out var slugInfo))
-//    { }
-//    string redirectUrl;
-//    if (!string.IsNullOrEmpty(userLocation) && slugInfo.RegionUrls.TryGetValue(userLocation, out var regionUrl))
-//    {
-//        redirectUrl = regionUrl;
-//    }
-//    else
-//    {
-//        redirectUrl = slugInfo.DefaultUrl;
-//    }
+app.MapGet("/redirect", (string slug) =>
+{
+    Dictionary<string, SlugInfo> slugDefinitions;
+    string jsonFilePath = "link-definitions.json";
+    string jsonContents = System.IO.File.ReadAllText(jsonFilePath);
+    var linkDefinitions = JsonConvert.DeserializeObject<LinkDefinitions>(jsonContents);
+    slugDefinitions = linkDefinitions.Slugs.ToDictionary(s => s.Slug);
 
-//    RedirectResult redirect = new RedirectResult("http://www.cnn.com", true);
-//    return redirect;
-//})
-//.WithName("Redirect")
-//.WithOpenApi();
+    if (slugDefinitions.TryGetValue(slug, out var slugInfo))
+    {
+        string redirectUrl = slugInfo.DefaultUrl;
+        Results.Redirect(redirectUrl);
+    }
+
+    return ;
+})
+.WithName("Redirect")
+.WithOpenApi();
 
 app.Run();
 
